@@ -10,6 +10,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Personal Expenses',
+      theme: ThemeData(
+          primarySwatch: Colors.green,
+          accentColor: Color.fromARGB(255, 89, 202, 132),
+          fontFamily: 'QuickSand',
+          textTheme: TextTheme(
+              headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+              button: TextStyle(color: Colors.white)),
+          buttonColor: Theme.of(context).primaryColor,
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                  headline6: TextStyle(fontFamily: 'OpenSans', fontSize: 20)))),
       home: HomePage(),
     );
   }
@@ -21,17 +35,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Transaction> transactions = [
-    Transaction(
-        id: 't1', title: 'new shoes', amount: 22.00, date: DateTime.now()),
-  ];
-  void _newTransaction(String title, double amount) {
+  List<Transaction> transactions = [];
+  void _newTransaction(String title, double amount, DateTime choosenDate) {
     setState(() {
       transactions.add(Transaction(
           id: DateTime.now().toString(),
           title: title,
           amount: amount,
-          date: DateTime.now()));
+          date: choosenDate));
+    });
+  }
+
+  List<Transaction> get _recentTransaction {
+    return transactions
+        .where((element) =>
+            element.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
+        .toList();
+  }
+
+  void _presentBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return GestureDetector(
+            child: NewTransaction(_newTransaction),
+            behavior: HitTestBehavior.opaque,
+          );
+        });
+  }
+
+  void _removeTransaction(String id) {
+    setState(() {
+      this.transactions.removeWhere((element) => element.id == id);
     });
   }
 
@@ -40,6 +75,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Personal Expense'),
+        actions: [
+          IconButton(
+              onPressed: () => _presentBottomSheet(), icon: Icon(Icons.add))
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
@@ -48,11 +87,17 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Chart(),
-              NewTransaction(_newTransaction),
-              TransactionList(transactions)
+              Chart(this._recentTransaction),
+              TransactionList(transactions, _removeTransaction)
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _presentBottomSheet(),
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).textTheme.button.color,
         ),
       ),
     );

@@ -4,64 +4,58 @@ import 'package:personal_expenses/models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  const TransactionList(this.transactions);
+  final Function _removeTransaction;
+  const TransactionList(this.transactions, this._removeTransaction);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
+      height: 480,
       width: double.infinity,
-      child: ListView(
-        children: transactions.map((tran) {
-          return Card(
-            elevation: 5,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      child: Text(
-                        '\$ ${tran.amount}',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.purple),
+      child: transactions.isEmpty
+          ? Image.asset(
+              'assets/images/no-data.jpg',
+              fit: BoxFit.cover,
+            )
+          : ListView.builder(
+              itemCount: transactions.length,
+              itemBuilder: (_, index) {
+                return Card(
+                  elevation: 5,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: FittedBox(
+                            child: Text(
+                                '\$${transactions[index].amount.toStringAsFixed(2)}',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(color: Colors.white))),
                       ),
                     ),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Colors.purple)),
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            tran.title,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            DateFormat('dd/MM/yyyy').format(tran.date),
-                            style: const TextStyle(color: Colors.grey),
-                          )
-                        ],
-                      ),
+                    title: Text(
+                      transactions[index].title,
+                      style: Theme.of(context).textTheme.headline6.copyWith(),
                     ),
+                    subtitle: Text(
+                      DateFormat('dd/MM/yyyy').format(transactions[index].date),
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    trailing: IconButton(
+                        onPressed: () =>
+                            _removeTransaction(transactions[index].id),
+                        icon: Icon(
+                          Icons.remove_circle,
+                          color: Theme.of(context).errorColor,
+                        )),
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        }).toList(),
-      ),
     );
   }
 }
