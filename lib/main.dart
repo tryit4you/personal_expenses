@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:personal_expenses/models/transaction.dart';
 import 'package:personal_expenses/widgets/chart.dart';
+import 'package:personal_expenses/widgets/landscape_mode.dart';
 import 'package:personal_expenses/widgets/new_transaction.dart';
-import 'package:personal_expenses/widgets/transaction_list.dart';
+import 'package:personal_expenses/widgets/portrait_mode.dart';
 
-void main(List<String> args) => runApp(MyApp());
+void main(List<String> args) {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -72,27 +79,26 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+    var statusSize = MediaQuery.of(context).padding.top;
+    bool isLandScape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    var appBar = AppBar(
+      title: const Text('Personal Expense'),
+      actions: [
+        IconButton(
+            onPressed: () => _presentBottomSheet(), icon: Icon(Icons.add))
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Personal Expense'),
-        actions: [
-          IconButton(
-              onPressed: () => _presentBottomSheet(), icon: Icon(Icons.add))
-        ],
-      ),
+      appBar: appBar,
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Chart(this._recentTransaction),
-              TransactionList(transactions, _removeTransaction)
-            ],
-          ),
-        ),
-      ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: isLandScape
+              ? LandscapeMode(screenSize, appBar, statusSize,
+                  this._recentTransaction, transactions, _removeTransaction)
+              : PortraitMode(screenSize, statusSize, appBar,
+                  this._recentTransaction, transactions, _removeTransaction)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _presentBottomSheet(),
         child: Icon(

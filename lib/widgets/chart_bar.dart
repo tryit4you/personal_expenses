@@ -8,43 +8,45 @@ class ChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: Column(
-        children: [
-          Container(
-            child: FittedBox(child: Text('\$${amount.toStringAsFixed(2)}')),
-            height: 25,
-          ),
-          Container(
-            width: 10,
-            height: 100,
-            child: Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(220, 220, 220, 1),
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(30)),
-                ),
-                FractionallySizedBox(
-                  heightFactor: totalAmount,
-                  child: Container(
+    return LayoutBuilder(builder: ((context, constraints) {
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        child: Column(
+          children: [
+            Container(
+              child: FittedBox(child: Text('\$${amount.toStringAsFixed(0)}')),
+              height: 25,
+            ),
+            Container(
+              width: 10,
+              height: 100,
+              child: Stack(
+                alignment: AlignmentDirectional.bottomStart,
+                children: [
+                  Container(
                     decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        color: Color.fromRGBO(220, 220, 220, 1),
+                        border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(30)),
                   ),
-                )
-              ],
+                  FractionallySizedBox(
+                    heightFactor: totalAmount,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(30)),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Text(
-            '${title}',
-            style: TextStyle(fontWeight: FontWeight.w200),
-          )
-        ],
-      ),
-    );
+            Text(
+              '${title}',
+              style: TextStyle(fontWeight: FontWeight.w200),
+            )
+          ],
+        ),
+      );
+    }));
   }
 }

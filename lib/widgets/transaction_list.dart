@@ -4,20 +4,27 @@ import 'package:personal_expenses/models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  final Function _removeTransaction;
-  const TransactionList(this.transactions, this._removeTransaction);
+  final Function removeTransaction;
+  final AppBar appBar;
+  final double status;
+  final bool isLandScape;
+  // final bool isLandScape;
+  TransactionList(this.transactions, this.removeTransaction,
+      [this.isLandScape = false, this.appBar, this.status]);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 480,
       width: double.infinity,
+      height: MediaQuery.of(context).size.height -
+          (isLandScape == true ? appBar.preferredSize.height + 30 : 0),
       child: transactions.isEmpty
           ? Image.asset(
               'assets/images/no-data.jpg',
               fit: BoxFit.cover,
             )
           : ListView.builder(
+              scrollDirection: Axis.vertical,
               itemCount: transactions.length,
               itemBuilder: (_, index) {
                 return Card(
@@ -47,7 +54,7 @@ class TransactionList extends StatelessWidget {
                     ),
                     trailing: IconButton(
                         onPressed: () =>
-                            _removeTransaction(transactions[index].id),
+                            removeTransaction(transactions[index].id),
                         icon: Icon(
                           Icons.remove_circle,
                           color: Theme.of(context).errorColor,
