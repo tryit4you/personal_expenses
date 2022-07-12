@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 
 class NewTransaction extends StatelessWidget {
-  const NewTransaction({Key key}) : super(key: key);
-  void _newTransaction() {}
+  final Function _newTransaction;
+
+  NewTransaction(this._newTransaction);
+
+  var titleController = TextEditingController();
+  var amountController = TextEditingController();
+
+  void submitData() {
+    var inputTitle = titleController.text;
+    var inputAmount = amountController.text;
+    if (inputTitle == null || inputAmount == null) {
+      return;
+    }
+
+    _newTransaction(inputTitle, double.parse(inputAmount));
+  }
+
   @override
   Widget build(BuildContext context) {
-    var titleController = TextEditingController();
-    var amountController = TextEditingController();
     return Container(
       child: Column(
         children: [
@@ -15,17 +28,18 @@ class NewTransaction extends StatelessWidget {
               labelText: 'Title',
               prefixIcon: Icon(Icons.title),
             ),
+            keyboardType: TextInputType.text,
             controller: titleController,
-            onSubmitted: (_) => _newTransaction,
+            onSubmitted: (_) => submitData(),
           ),
           TextField(
               controller: amountController,
-              onSubmitted: (_) => _newTransaction,
+              onSubmitted: (_) => submitData(),
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Amount',
-                prefixIcon: Icon(Icons.currency_exchange),
-              )),
-          TextButton(onPressed: () {}, child: const Text('Add Transaction'))
+                  labelText: 'Amount', prefixIcon: Icon(Icons.money))),
+          TextButton(
+              onPressed: () => submitData(), child: Text('Add Transaction'))
         ],
       ),
     );
