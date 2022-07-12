@@ -1,7 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:personal_expenses/models/transaction.dart';
-import 'package:personal_expenses/widgets/chart.dart';
 import 'package:personal_expenses/widgets/landscape_mode.dart';
 import 'package:personal_expenses/widgets/new_transaction.dart';
 import 'package:personal_expenses/widgets/portrait_mode.dart';
@@ -99,13 +98,15 @@ class _HomePageState extends State<HomePage> {
                   this._recentTransaction, transactions, _removeTransaction)
               : PortraitMode(screenSize, statusSize, appBar,
                   this._recentTransaction, transactions, _removeTransaction)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _presentBottomSheet(),
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).textTheme.button.color,
-        ),
-      ),
+      floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+              onPressed: () => _presentBottomSheet(),
+              child: Icon(
+                Icons.add,
+                color: Theme.of(context).textTheme.button.color,
+              ),
+            ),
     );
   }
 }
