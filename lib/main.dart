@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_expenses/models/transaction.dart';
 import 'package:personal_expenses/widgets/landscape_mode.dart';
@@ -80,33 +81,50 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     var statusSize = MediaQuery.of(context).padding.top;
-    bool isLandScape =
+    final isLandScape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    var appBar = AppBar(
-      title: const Text('Personal Expense'),
-      actions: [
-        IconButton(
-            onPressed: () => _presentBottomSheet(), icon: Icon(Icons.add))
-      ],
-    );
-    return Scaffold(
-      appBar: appBar,
-      body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: isLandScape
-              ? LandscapeMode(screenSize, appBar, statusSize,
-                  this._recentTransaction, transactions, _removeTransaction)
-              : PortraitMode(screenSize, statusSize, appBar,
-                  this._recentTransaction, transactions, _removeTransaction)),
-      floatingActionButton: Platform.isIOS
-          ? Container()
-          : FloatingActionButton(
-              onPressed: () => _presentBottomSheet(),
-              child: Icon(
-                Icons.add,
-                color: Theme.of(context).textTheme.button.color,
-              ),
+
+    var appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text('Personal Expenses'),
+            trailing: Row(
+              children: [
+                IconButton(
+                    onPressed: () => _newTransaction, icon: Icon(Icons.add))
+              ],
             ),
-    );
+          )
+        : AppBar(
+            title: const Text('Personal Expense'),
+            actions: [
+              IconButton(
+                  onPressed: () => _presentBottomSheet(), icon: Icon(Icons.add))
+            ],
+          );
+    final pageBody = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: isLandScape
+            ? LandscapeMode(screenSize, appBar, statusSize,
+                this._recentTransaction, transactions, _removeTransaction)
+            : PortraitMode(screenSize, statusSize, appBar,
+                this._recentTransaction, transactions, _removeTransaction));
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBar,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    onPressed: () => _presentBottomSheet(),
+                    child: Icon(
+                      Icons.add,
+                      color: Theme.of(context).textTheme.button.color,
+                    ),
+                  ),
+          );
   }
 }
