@@ -22,11 +22,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Transaction> transactions = [
-    Transaction('t1', 'new shoes', 22.00, DateTime.now()),
-    Transaction('t2', 'New avatar', 22.00, DateTime.now()),
-    Transaction('t1', 'new shoes', 22.00, DateTime.now()),
-    Transaction('t1', 'new shoes', 22.00, DateTime.now()),
+    Transaction(
+        id: 't1', title: 'new shoes', amount: 22.00, date: DateTime.now()),
   ];
+  void _newTransaction(String title, double amount) {
+    setState(() {
+      transactions.add(Transaction(
+          id: DateTime.now().toString(),
+          title: title,
+          amount: amount,
+          date: DateTime.now()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +49,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Chart(),
-              NewTransaction(),
+              NewTransaction(_newTransaction),
               TransactionList(transactions)
             ],
           ),
