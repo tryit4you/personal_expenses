@@ -25,7 +25,7 @@ class NewTransaction extends StatelessWidget {
                 labelText: 'Amount',
                 prefixIcon: Icon(Icons.currency_exchange),
               )),
-          TextButton(onPressed: () {}, child: Text('Add Transaction'))
+          TextButton(onPressed: () {}, child: const Text('Add Transaction'))
         ],
       ),
     );
