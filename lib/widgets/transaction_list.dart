@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personal_expenses/models/transaction.dart';
+import 'package:personal_expenses/widgets/transaction_item.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
@@ -23,46 +24,14 @@ class TransactionList extends StatelessWidget {
               'assets/images/no-data.jpg',
               fit: BoxFit.cover,
             )
-          : ListView.builder(
+          : ListView(
               scrollDirection: Axis.vertical,
-              itemCount: transactions.length,
-              itemBuilder: (_, index) {
-                return Card(
-                  elevation: 5,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: FittedBox(
-                            child: Text(
-                                '\$${transactions[index].amount.toStringAsFixed(2)}',
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .copyWith(color: Colors.white))),
-                      ),
-                    ),
-                    title: Text(
-                      transactions[index].title,
-                      style: Theme.of(context).textTheme.headline6.copyWith(),
-                    ),
-                    subtitle: Text(
-                      DateFormat('dd/MM/yyyy').format(transactions[index].date),
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    trailing: IconButton(
-                        onPressed: () =>
-                            removeTransaction(transactions[index].id),
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Theme.of(context).errorColor,
-                        )),
-                  ),
-                );
-              },
-            ),
+              children: transactions.map((tx) {
+                return TransactionItem(
+                    key: ValueKey(tx.id),
+                    transaction: tx,
+                    removeTransaction: removeTransaction);
+              }).toList()),
     );
   }
 }

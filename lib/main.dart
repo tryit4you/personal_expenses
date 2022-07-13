@@ -41,8 +41,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<Transaction> transactions = [];
+  var appState = '';
   void _newTransaction(String title, double amount, DateTime choosenDate) {
     setState(() {
       transactions.add(Transaction(
@@ -60,7 +61,24 @@ class _HomePageState extends State<HomePage> {
         .toList();
   }
 
-  void _presentBottomSheet() {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  void _presentBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (_) {
@@ -98,7 +116,8 @@ class _HomePageState extends State<HomePage> {
             title: const Text('Personal Expense'),
             actions: [
               IconButton(
-                  onPressed: () => _presentBottomSheet(), icon: Icon(Icons.add))
+                  onPressed: () => _presentBottomSheet(context),
+                  icon: Icon(Icons.add))
             ],
           );
     final pageBody = Container(
@@ -119,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             floatingActionButton: Platform.isIOS
                 ? Container()
                 : FloatingActionButton(
-                    onPressed: () => _presentBottomSheet(),
+                    onPressed: () => _presentBottomSheet(context),
                     child: Icon(
                       Icons.add,
                       color: Theme.of(context).textTheme.button.color,

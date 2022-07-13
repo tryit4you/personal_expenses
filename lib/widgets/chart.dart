@@ -5,7 +5,7 @@ import 'package:personal_expenses/widgets/chart_bar.dart';
 
 class Chart extends StatelessWidget {
   final List<Transaction> recentTransactions;
-  Chart(this.recentTransactions);
+  const Chart(this.recentTransactions);
   List<Map<String, Object>> get groupedTransactionValues {
     List<Map<String, Object>> groupeds = [];
     var weekDay = List.generate(

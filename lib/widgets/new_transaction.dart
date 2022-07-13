@@ -4,17 +4,22 @@ import 'package:intl/intl.dart';
 class NewTransaction extends StatefulWidget {
   final Function _newTransaction;
 
-  NewTransaction(this._newTransaction);
+  NewTransaction(this._newTransaction) {
+    print('Constructor NewTransaction Widget');
+  }
 
   @override
-  State<NewTransaction> createState() => _NewTransactionState();
+  _NewTransactionState createState() {
+    print('CreateState New Transaction Widget');
+
+    return _NewTransactionState();
+  }
 }
 
 class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
   DateTime dateChoosen;
-
   void submitData() {
     var inputTitle = titleController.text;
     var inputAmount = amountController.text;
@@ -29,6 +34,28 @@ class _NewTransactionState extends State<NewTransaction> {
     Navigator.of(context).pop();
   }
 
+  @override
+  void initState() {
+    print('InitState()');
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(NewTransaction oldWidget) {
+    print('didUpdateWidget(): ');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    print('dispose()');
+    super.dispose();
+  }
+
+  _NewTransactionState() {
+    print('Constructor NewTransaction State');
+  }
   void _presentDatePicker() {
     showDatePicker(
             context: context,
@@ -44,6 +71,7 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
+    print('Run build()');
     return SingleChildScrollView(
       child: Container(
         child: Padding(
